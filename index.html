@@ -87,7 +87,19 @@
     </section>
   </main>
 
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+<script>
+  window.TrackJS && TrackJS.install({ 
+    token: "3ea423f93aea4c54a35d11b558a6052c"
+    // for more configuration options, see https://docs.trackjs.com
+  });
+</script>
+                        
+
   <script>
+    class ValidationError extends Error { };
+    class PropertyRequiredError extends ValidationError {};
+
     let form = document.querySelector('form');
     form.addEventListener('submit', e => {
       e.preventDefault();
@@ -100,8 +112,215 @@
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
 
-    // Start your code here
-    // You may move this JS to another file if you wish
+    for(let i = 0; i < errorBtns.length; i ++){
+      if(errorBtns[i].innerHTML == "Console Log"){
+        errorBtns[i].addEventListener('click', consoleLog);
+      }
+
+      if(errorBtns[i].innerHTML == "Console Error"){
+        errorBtns[i].addEventListener('click', consoleError);
+      }
+
+      if(errorBtns[i].innerHTML == "Console Count"){
+        errorBtns[i].addEventListener('click', consoleCount);
+      }
+
+      if(errorBtns[i].innerHTML == "Console Warn"){
+        errorBtns[i].addEventListener('click', consoleWarn);
+      }
+
+      if(errorBtns[i].innerHTML == "Console Assert"){
+        errorBtns[i].addEventListener('click', consoleAssert);
+      }
+
+      if(errorBtns[i].innerHTML == "Console Clear"){
+        errorBtns[i].addEventListener('click', consoleClear);
+      }
+      if(errorBtns[i].innerHTML == "Console Dir"){
+        errorBtns[i].addEventListener('click', consoleDir);
+      }
+      if(errorBtns[i].innerHTML == "Console dirxml"){
+        errorBtns[i].addEventListener('click', consoleDirxml);
+      }
+      if(errorBtns[i].innerHTML == "Console Group Start"){
+        errorBtns[i].addEventListener('click', consoleGroupStart);
+      }
+      if(errorBtns[i].innerHTML == "Console Group End"){
+        errorBtns[i].addEventListener('click', consoleGroupEnd);
+      }
+
+      if(errorBtns[i].innerHTML == "Console Table"){
+        errorBtns[i].addEventListener('click', consoleTable);
+      }
+      if(errorBtns[i].innerHTML == "Start Timerl"){
+        errorBtns[i].addEventListener('click', startTimer);
+      }
+      if(errorBtns[i].innerHTML == "End Timer"){
+        errorBtns[i].addEventListener('click', endTimer);
+      }
+      if(errorBtns[i].innerHTML == "Console Trace"){
+        errorBtns[i].addEventListener('click', consoleTrace);
+      }
+      if(errorBtns[i].innerHTML == "Trigger a Global Error"){
+        errorBtns[i].addEventListener('click', triggerGlobal);
+      }
+    }
+    function consoleLog(){
+      console.log("Console Log Demo");
+    }
+
+    function consoleError(){
+      console.error("There was an error");
+    }
+
+    function consoleCount(){
+      console.count("Console Button");
+    }
+
+    function consoleWarn(){
+      console.warn('Warn');
+    }
+
+     function consoleAssert(){
+      const a = 5;
+      const reason = 'a is expected to be less than 4';
+      console.assert(a < 4, {a, reason});
+    }
+
+    function consoleClear(){
+      console.clear();
+    }
+
+    function consoleDir(){
+      console.dir(document.querySelector('output'));
+
+    }
+
+    function consoleDirxml(){
+      console.dirxml(document.querySelector('output'));
+    }
+
+    function consoleGroupStart(){
+      let arrayClasses = [];
+      arrayClasses[0] = "CSE 110";
+      arrayClasses[1] = "SOCI 140";
+      arrayClasses[2] = "MATH 187a";
+      console.group("classes");
+      console.log(arrayClasses[0]);
+      console.log(arrayClasses[1]);
+      console.log(arrayClasses[2]);
+
+    }
+
+    function consoleGroupEnd(){
+      console.groupEnd("classes");
+
+    }
+
+    function consoleTable(){
+      let arrayClasses = [];
+      arrayClasses[0] = "CSE 110";
+      arrayClasses[1] = "SOCI 140";
+      arrayClasses[2] = "MATH 187a";
+      console.table(arrayClasses);
+
+    }
+
+    function startTimer(){
+      console.time(testTimer);
+      for(let i = 0; i < 1000; i++){
+        let test = i ** 2;
+      }
+    }
+
+    function endTimer(){
+      console.timeEnd(testTimer);
+    }
+
+    function consoleTrace(){
+      function firstFunction() {
+      console.trace('firstFunction');
+      }
+
+      firstFunction();
+    }
+
+    function triggerGlobal(){
+      window.onerror = function(errMsg, url, line, column, error){
+        let message = [
+          'message: ' + errMsg,
+          'URL: ' + url,
+          'line: ' + line,
+          'column: ' + column,
+          'error: ' + JSON.stringify(error)
+        ];
+
+        console.log(message);
+      }
+      return false;
+    }
+
+    try {
+      console.log('start of try catch');
+      let firstNum = document.getElementById("first-num").value;
+      firstNum = "hello";
+      let secondNum = document.getElementById("second-num");
+      secondNum = "5";
+      let operator = document.getElementById("operator");
+      document.querySelector('output').innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+    } catch (err){
+      console.log(err);
+      console.log('end of try catch');
+    }
+
+    function isSquare(width, height){
+      if(width != height){
+        throw "width is not equal to height so it is not a square";
+      }
+    }
+
+    function isNumeric(number){
+      if(!isNaN(number)){
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    function checkInputs(firstNum, secondNum) {
+      if(!(isNumeric((document.getElementById("first-num").value)))){
+        throw new PropertyRequiredError("first-num");
+      }
+
+      if(!(isNumeric((document.getElementById("second-num").value)))){
+        throw new PropertyRequiredError("second-num");
+      }
+    }
+    
+    try {
+      let firstInput = document.getElementById("first-num").value;
+      let secondInput = document.getElementById("second-num").value;
+      firstInput = "abc";
+      secondInput = "word";
+      checkInputs(firstInput, secondInput);
+    } catch(error) {
+      if( error instanceof ValidationError){
+        throw new "input is not a number";
+      } else {
+        throw error;
+      }
+    }
+
+    try {
+      isSquare(3, 4);
+    } catch (err){
+      throw err;
+      console.log(err);
+    }
+
+    TrackJS.track('Testing TrackJS!');
+
+
   </script>
 </body>
 
